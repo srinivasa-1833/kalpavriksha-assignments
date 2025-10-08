@@ -3,9 +3,8 @@
 #include <string.h>
 
 typedef struct {
-    int id;
+    int id, age;
     char name[50];
-    int age;
 } User;
 
 void createUser() {
