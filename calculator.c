@@ -2,35 +2,38 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#define MAX_SIZE 100
+#define MAX_LENGTH 100
 
 int main() {
-    char expr[MAX_SIZE];
-    int nums[MAX_SIZE], numCount = 0;
-    char ops[MAX_SIZE]; 
+    char expr[MAX_LENGTH];
+    int numbers[MAX_LENGTH], numCount = 0;
+    char operators[MAX_LENGTH]; 
     int opCount = 0;
 
     printf("Enter expression: ");
-    fgets(expr, MAX_SIZE, stdin);
+    fgets(expr, MAX_LENGTH, stdin);
 
-    for(int i=0; expr[i]; i++){
-        if(expr[i]=='\n') expr[i]='\0';
+    for(int i = 0; expr[i]; i++){
+        if(expr[i] == '\n') expr[i] = '\0';
     }
 
     int i = 0;
     while(expr[i]) {
-        if(isspace(expr[i])) { i++; continue; }
+        if(isspace(expr[i])) { 
+            i++; 
+            continue; 
+        }
 
         if(isdigit(expr[i])) {
             int val = 0;
             while(isdigit(expr[i])) {
-                val = val*10 + (expr[i]-'0');
+                val = val * 10 + (expr[i] - '0');
                 i++;
             }
-            nums[numCount++] = val;
+            numbers[numCount++] = val;
         }
         else if(expr[i]=='+' || expr[i]=='-' || expr[i]=='*' || expr[i]=='/') {
-            ops[opCount++] = expr[i];
+            operators[opCount++] = expr[i];
             i++;
         }
         else {
@@ -39,23 +42,25 @@ int main() {
         }
     }
 
-    for(i=0; i<opCount; i++) {
-        if(ops[i]=='*' || ops[i]=='/') {
-            if(ops[i]=='/' && nums[i+1]==0) {
+    for(i = 0; i < opCount; i++) {
+        if(operators[i] == '*' || operators[i] == '/') {
+            if(operators[i] == '/' && numbers[i+1] == 0) {
                 printf("Error: Division by zero.\n");
                 return 0;
             }
-            nums[i] = (ops[i]=='*') ? nums[i]*nums[i+1] : nums[i]/nums[i+1];
-            for(int j=i+1; j<numCount-1; j++) nums[j] = nums[j+1];
-            for(int j=i; j<opCount-1; j++) ops[j] = ops[j+1];
-            numCount--; opCount--; i--;
+            numbers[i] = (operators[i] == '*') ? numbers[i] * numbers[i+1] : numbers[i] / numbers[i+1];
+            for(int j = i+1; j < numCount-1; j++) numbers[j] = numbers[j+1];
+            for(int j = i; j < opCount-1; j++) operators[j] = operators[j+1];
+            numCount--; 
+            opCount--; 
+            i--;
         }
     }
 
-    int result = nums[0];
-    for(i=0; i<opCount; i++) {
-        if(ops[i]=='+') result += nums[i+1];
-        else result -= nums[i+1];
+    int result = numbers[0];
+    for(i = 0; i < opCount; i++) {
+        if(operators[i] == '+') result += numbers[i+1];
+        else result -= numbers[i+1];
     }
 
     printf("%d\n", result);
