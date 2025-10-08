@@ -9,12 +9,29 @@ typedef struct {
 
 void addUser() {
     User u;
-    FILE *f = fopen("users.txt", "a");
+    FILE *f = fopen("users.txt", "a+");
     if (!f) return;
 
-    printf("Enter ID: "); scanf("%d", &u.id);
+    printf("Enter ID: "); 
+    scanf("%d", &u.id);
+
+    User temp;
+    rewind(f);
+    while(fscanf(f, "%d|%49[^|]|%d\n", &temp.id, temp.name, &temp.age) != EOF) {
+        if(temp.id == u.id) {
+            printf("Error: ID already exists.\n");
+            fclose(f);
+            return;
+        }
+    }
+
     printf("Enter Name: "); scanf(" %[^\n]", u.name);
     printf("Enter Age: "); scanf("%d", &u.age);
+    if(u.age < 0) {
+        printf("Error: Age cannot be negative.\n");
+        fclose(f);
+        return;
+    }
 
     fprintf(f, "%d|%s|%d\n", u.id, u.name, u.age);
     fclose(f);
@@ -46,13 +63,15 @@ int processUserById(int id, int operation) {
             if(operation == 1) {
                 printf("Enter new Name: "); scanf(" %[^\n]", u.name);
                 printf("Enter new Age: "); scanf("%d", &u.age);
+                if(u.age < 0) { fclose(f); fclose(temp); return 0; }
             }
             if(operation == 2) continue;
         }
         fprintf(temp, "%d|%s|%d\n", u.id, u.name, u.age);
     }
 
-    fclose(f); fclose(temp);
+    fclose(f);
+    fclose(temp);
     remove("users.txt");
     rename("temp.txt", "users.txt");
 
