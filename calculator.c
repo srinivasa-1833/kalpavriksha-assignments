@@ -2,16 +2,16 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#define MAX 100
+#define MAX_SIZE 100
 
 int main() {
-    char expr[MAX];
-    int nums[MAX], numCount = 0;
-    char ops[MAX]; 
+    char expr[MAX_SIZE];
+    int nums[MAX_SIZE], numCount = 0;
+    char ops[MAX_SIZE]; 
     int opCount = 0;
 
     printf("Enter expression: ");
-    fgets(expr, MAX, stdin);
+    fgets(expr, MAX_SIZE, stdin);
 
     for(int i=0; expr[i]; i++){
         if(expr[i]=='\n') expr[i]='\0';
