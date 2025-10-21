@@ -2,56 +2,50 @@
 #include <stdlib.h>
 #include <time.h>
 
-int main() {
-    int n;
-    printf("Enter matrix size (2-10): ");
-    scanf("%d", &n);
+#define MAX_SIZE 10
 
-    int **matrix = (int **)malloc(n * sizeof(int *));
-    for (int i = 0; i < n; i++)
-        *(matrix + i) = (int *)malloc(n * sizeof(int));
-
-    srand(time(NULL));
+void generate_matrix(int **matrix, int n) {
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
             *(*(matrix + i) + j) = rand() % 256;
+}
 
-    printf("\nOriginal Randomly Generated Matrix:\n");
+void display_matrix(int **matrix, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++)
-            printf("%3d ", *(*(matrix + i) + j));
+            printf("%4d", *(*(matrix + i) + j));
         printf("\n");
     }
+}
 
-    for (int i = 0; i < n; i++)
-        for (int j = i + 1; j < n; j++) {
-            int temp = *(*(matrix + i) + j);
-            *(*(matrix + i) + j) = *(*(matrix + j) + i);
-            *(*(matrix + j) + i) = temp;
+void rotate_matrix_clockwise(int **matrix, int n) {
+    for (int layer = 0; layer < n / 2; layer++) {
+        int first = layer;
+        int last = n - 1 - layer;
+        for (int i = first; i < last; i++) {
+            int offset = i - first;
+            int *top = *(matrix + first) + i;
+            int *left = *(matrix + (last - offset)) + first;
+            int *bottom = *(matrix + last) + (last - offset);
+            int *right = *(matrix + i) + last;
+
+            int temp = *top;
+            *top = *left;
+            *left = *bottom;
+            *bottom = *right;
+            *right = temp;
         }
-
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < n / 2; j++) {
-            int temp = *(*(matrix + i) + j);
-            *(*(matrix + i) + j) = *(*(matrix + i) + (n - 1 - j));
-            *(*(matrix + i) + (n - 1 - j)) = temp;
-        }
-
-    printf("\nMatrix after 90° Clockwise Rotation:\n");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++)
-            printf("%3d ", *(*(matrix + i) + j));
-        printf("\n");
     }
+}
 
+void apply_smoothing_filter(int **matrix, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             int sum = 0, count = 0;
-            for (int x = -1; x <= 1; x++) {
-                for (int y = -1; y <= 1; y++) {
-                    int ni = i + x, nj = j + y;
-                    if (ni >= 0 && nj >= 0 && ni < n && nj < n) {
-                        sum += *(*(matrix + ni) + nj);
+            for (int x = i - 1; x <= i + 1; x++) {
+                for (int y = j - 1; y <= j + 1; y++) {
+                    if (x >= 0 && x < n && y >= 0 && y < n) {
+                        sum += *(*(matrix + x) + y);
                         count++;
                     }
                 }
@@ -59,13 +53,35 @@ int main() {
             *(*(matrix + i) + j) = sum / count;
         }
     }
+}
+
+int main() {
+    int n;
+    printf("Enter matrix size (2-10): ");
+    scanf("%d", &n);
+
+    if (n < 2 || n > 10) {
+        printf("Error: Matrix size must be between 2 and 10.\n");
+        return 1;
+    }
+
+    int **matrix = (int **)malloc(n * sizeof(int *));
+    for (int i = 0; i < n; i++)
+        *(matrix + i) = (int *)malloc(n * sizeof(int));
+
+    srand(time(0));
+
+    printf("\nOriginal Randomly Generated Matrix:\n");
+    generate_matrix(matrix, n);
+    display_matrix(matrix, n);
+
+    printf("\nMatrix after 90° Clockwise Rotation:\n");
+    rotate_matrix_clockwise(matrix, n);
+    display_matrix(matrix, n);
 
     printf("\nMatrix after Applying 3×3 Smoothing Filter:\n");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++)
-            printf("%3d ", *(*(matrix + i) + j));
-        printf("\n");
-    }
+    apply_smoothing_filter(matrix, n);
+    display_matrix(matrix, n);
 
     for (int i = 0; i < n; i++)
         free(*(matrix + i));
