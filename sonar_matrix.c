@@ -45,9 +45,10 @@ void apply_smoothing_filter(int **matrix, int size_of_matrix) {
             int sum = 0, count = 0;
             for (int x = i - 1; x <= i + 1; x++) {
                 for (int y = j - 1; y <= j + 1; y++) {
-                    if (x >= 0 && x < size_of_matrix && y >= 0 && y < size_of_matrix)
+                    if (x >= 0 && x < size_of_matrix && y >= 0 && y < size_of_matrix) {
                         sum += *(*(matrix + x) + y) & 0xFF;
                         count++;
+                    }
                 }
             }
             int avg = sum / count;
