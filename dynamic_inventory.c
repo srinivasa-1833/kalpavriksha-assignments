@@ -11,7 +11,6 @@ typedef struct {
     int quantity;
 } Product;
 
-// Function to take input for initial products
 void inputInitialProducts(Product *products, int count) {
     for (int i = 0; i < count; i++) {
         printf("Enter details for product %d:\n", i + 1);
@@ -26,7 +25,6 @@ void inputInitialProducts(Product *products, int count) {
     }
 }
 
-// Add a new product
 void addProduct(Product **products, int *count) {
     *products = realloc(*products, (*count + 1) * sizeof(Product));
     if (*products == NULL) {
@@ -48,7 +46,6 @@ void addProduct(Product **products, int *count) {
     printf("Product added successfully!\n");
 }
 
-// View all products
 void viewProducts(Product *products, int count) {
     if (count == 0) {
         printf("No products available.\n");
@@ -62,7 +59,6 @@ void viewProducts(Product *products, int count) {
     }
 }
 
-// Update product quantity
 void updateQuantity(Product *products, int count) {
     int id, newQty, found = 0;
     printf("Enter Product ID to update quantity: ");
@@ -102,7 +98,6 @@ void searchByID(Product *products, int count) {
         printf("Product not found.\n");
 }
 
-// Search by partial name
 void searchByName(Product *products, int count) {
     char keyword[NAME_LENGTH];
     int found = 0;
@@ -122,7 +117,6 @@ void searchByName(Product *products, int count) {
         printf("No products match the search.\n");
 }
 
-// Search by price range
 void searchByPriceRange(Product *products, int count) {
     float minPrice, maxPrice;
     int found = 0;
@@ -144,7 +138,6 @@ void searchByPriceRange(Product *products, int count) {
         printf("No products found in the given price range.\n");
 }
 
-// Delete product by ID
 void deleteProduct(Product **products, int *count) {
     int id, found = 0, index = -1;
     printf("Enter Product ID to delete: ");
@@ -177,7 +170,6 @@ void deleteProduct(Product **products, int *count) {
     printf("Product deleted successfully!\n");
 }
 
-// Display main menu
 void displayMenu() {
     printf("\n========= INVENTORY MENU =========\n");
     printf("1. Add New Product\n");
